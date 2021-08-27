@@ -41,6 +41,8 @@
             this.label4 = new System.Windows.Forms.Label();
             this.txtPoemTitlePrefix = new System.Windows.Forms.TextBox();
             this.label5 = new System.Windows.Forms.Label();
+            this.label6 = new System.Windows.Forms.Label();
+            this.cmbFormat = new System.Windows.Forms.ComboBox();
             this.SuspendLayout();
             // 
             // label1
@@ -101,7 +103,7 @@
             // 
             // btnConvert
             // 
-            this.btnConvert.Location = new System.Drawing.Point(133, 157);
+            this.btnConvert.Location = new System.Drawing.Point(133, 183);
             this.btnConvert.Name = "btnConvert";
             this.btnConvert.Size = new System.Drawing.Size(75, 23);
             this.btnConvert.TabIndex = 6;
@@ -111,7 +113,7 @@
             // 
             // txtPoetName
             // 
-            this.txtPoetName.Location = new System.Drawing.Point(133, 73);
+            this.txtPoetName.Location = new System.Drawing.Point(133, 99);
             this.txtPoetName.Name = "txtPoetName";
             this.txtPoetName.Size = new System.Drawing.Size(98, 21);
             this.txtPoetName.TabIndex = 8;
@@ -120,7 +122,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(73, 77);
+            this.label3.Location = new System.Drawing.Point(73, 103);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(53, 13);
             this.label3.TabIndex = 7;
@@ -128,7 +130,7 @@
             // 
             // txtCategoryName
             // 
-            this.txtCategoryName.Location = new System.Drawing.Point(133, 101);
+            this.txtCategoryName.Location = new System.Drawing.Point(133, 127);
             this.txtCategoryName.Name = "txtCategoryName";
             this.txtCategoryName.Size = new System.Drawing.Size(68, 21);
             this.txtCategoryName.TabIndex = 10;
@@ -137,7 +139,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(78, 105);
+            this.label4.Location = new System.Drawing.Point(78, 131);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(48, 13);
             this.label4.TabIndex = 9;
@@ -145,7 +147,7 @@
             // 
             // txtPoemTitlePrefix
             // 
-            this.txtPoemTitlePrefix.Location = new System.Drawing.Point(133, 129);
+            this.txtPoemTitlePrefix.Location = new System.Drawing.Point(133, 155);
             this.txtPoemTitlePrefix.Name = "txtPoemTitlePrefix";
             this.txtPoemTitlePrefix.Size = new System.Drawing.Size(88, 21);
             this.txtPoemTitlePrefix.TabIndex = 12;
@@ -154,17 +156,40 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(17, 133);
+            this.label5.Location = new System.Drawing.Point(17, 159);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(109, 13);
             this.label5.TabIndex = 11;
             this.label5.Text = "پیشوند عنوان شعرها:";
             // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(80, 75);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(32, 13);
+            this.label6.TabIndex = 13;
+            this.label6.Text = "قالب:";
+            // 
+            // cmbFormat
+            // 
+            this.cmbFormat.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbFormat.FormattingEnabled = true;
+            this.cmbFormat.Items.AddRange(new object[] {
+            "وحدت کرمانشاهی / شاه نعمت الله ولی",
+            "سلطان ولد"});
+            this.cmbFormat.Location = new System.Drawing.Point(134, 72);
+            this.cmbFormat.Name = "cmbFormat";
+            this.cmbFormat.Size = new System.Drawing.Size(397, 21);
+            this.cmbFormat.TabIndex = 14;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(537, 193);
+            this.ClientSize = new System.Drawing.Size(537, 216);
+            this.Controls.Add(this.cmbFormat);
+            this.Controls.Add(this.label6);
             this.Controls.Add(this.txtPoemTitlePrefix);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.txtCategoryName);
@@ -204,6 +229,8 @@
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.TextBox txtPoemTitlePrefix;
         private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.ComboBox cmbFormat;
     }
 }
 
