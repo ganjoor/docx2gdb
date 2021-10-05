@@ -61,7 +61,7 @@
             this.txtInput.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.txtInput.Size = new System.Drawing.Size(358, 21);
             this.txtInput.TabIndex = 1;
-            this.txtInput.Text = "D:\\My Documents\\My Books\\divan-vahdat.docx";
+            this.txtInput.Text = "C:\\Users\\moham\\Desktop\\riaz-ul-arefin.docx";
             // 
             // btnSelectInput
             // 
@@ -90,7 +90,7 @@
             this.txtOutput.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.txtOutput.Size = new System.Drawing.Size(358, 21);
             this.txtOutput.TabIndex = 4;
-            this.txtOutput.Text = "D:\\My Documents\\vahdat.gdb";
+            this.txtOutput.Text = "C:\\Users\\moham\\Desktop\\riaz-ul-arefin.gdb";
             // 
             // label2
             // 
@@ -105,7 +105,7 @@
             // 
             this.btnConvert.Location = new System.Drawing.Point(133, 183);
             this.btnConvert.Name = "btnConvert";
-            this.btnConvert.Size = new System.Drawing.Size(75, 23);
+            this.btnConvert.Size = new System.Drawing.Size(98, 23);
             this.btnConvert.TabIndex = 6;
             this.btnConvert.Text = "تبدیل";
             this.btnConvert.UseVisualStyleBackColor = true;
@@ -117,7 +117,7 @@
             this.txtPoetName.Name = "txtPoetName";
             this.txtPoetName.Size = new System.Drawing.Size(98, 21);
             this.txtPoetName.TabIndex = 8;
-            this.txtPoetName.Text = "وحدت کرمانشاهی";
+            this.txtPoetName.Text = "رضاقلی خان هدایت";
             // 
             // label3
             // 
@@ -132,9 +132,9 @@
             // 
             this.txtCategoryName.Location = new System.Drawing.Point(133, 127);
             this.txtCategoryName.Name = "txtCategoryName";
-            this.txtCategoryName.Size = new System.Drawing.Size(68, 21);
+            this.txtCategoryName.Size = new System.Drawing.Size(98, 21);
             this.txtCategoryName.TabIndex = 10;
-            this.txtCategoryName.Text = "دیوان اشعار";
+            this.txtCategoryName.Text = "تذکرهٔ ریاض العارفین";
             // 
             // label4
             // 
@@ -149,9 +149,9 @@
             // 
             this.txtPoemTitlePrefix.Location = new System.Drawing.Point(133, 155);
             this.txtPoemTitlePrefix.Name = "txtPoemTitlePrefix";
-            this.txtPoemTitlePrefix.Size = new System.Drawing.Size(88, 21);
+            this.txtPoemTitlePrefix.Size = new System.Drawing.Size(98, 21);
             this.txtPoemTitlePrefix.TabIndex = 12;
-            this.txtPoemTitlePrefix.Text = "غزل شمارهٔ";
+            this.txtPoemTitlePrefix.Text = "بخش";
             // 
             // label5
             // 
@@ -177,7 +177,8 @@
             this.cmbFormat.FormattingEnabled = true;
             this.cmbFormat.Items.AddRange(new object[] {
             "وحدت کرمانشاهی / شاه نعمت الله ولی",
-            "سلطان ولد"});
+            "سلطان ولد",
+            "رضاقلی خان هدایت"});
             this.cmbFormat.Location = new System.Drawing.Point(134, 72);
             this.cmbFormat.Name = "cmbFormat";
             this.cmbFormat.Size = new System.Drawing.Size(397, 21);
