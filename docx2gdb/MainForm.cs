@@ -389,6 +389,25 @@ namespace docx2gdb
                                         .Trim().Replace((char)0x200F, (char)0x200C).Replace("ي", "ی").Replace((char)0xE81D, (char)0x200C);
                                 }
                                 paragraphText = paragraphText.Replace("  ", " ").Replace("  ", " ").Trim();
+
+                                if (!string.IsNullOrEmpty(paragraphText))
+                                    if (paragraph.Descendants().OfType<Run>().Any())
+                                    {
+                                        if (paragraph.Descendants().OfType<Run>().First().Descendants().OfType<RunProperties>().Any())
+                                            if (paragraph.Descendants().OfType<Run>().First().Descendants().OfType<RunProperties>()
+                                                .First().Descendants().OfType<Bold>().Any())
+                                            {
+
+                                            paragraphText = paragraphText.Replace("  ", " ").Replace("  ", " ").Trim();
+                                            if (!string.IsNullOrEmpty(paragraphText))
+                                            {
+                                                GanjoorVerse newVerse = newGdbFile.CreateNewVerse(poemId, verseOrder, VersePosition.Comment);
+                                                newGdbFile.SetVerseText(poemId, newVerse._Order, paragraphText);
+                                                verseOrder++;
+                                                paragraphText = "";
+                                            }
+                                        }
+                                    }
                                 if (!string.IsNullOrEmpty(paragraphText))
                                     verses.Add(paragraphText);
 
@@ -427,7 +446,7 @@ namespace docx2gdb
                                             }
                                             paragraphText += run.InnerText
                                                 //optimize for search
-                                                .Replace("٭٭٭", "").Replace((char)0x200F, (char)0x200C).Replace("ي", "ی").Replace((char)0xE81D, (char)0x200C).Replace("  ", " ").Replace("  ", " ").Trim();
+                                                .Replace((char)0x200F, (char)0x200C).Replace("ي", "ی").Replace((char)0xE81D, (char)0x200C).Replace("  ", " ").Replace("  ", " ").Trim();
                                         }
 
                                         if (!string.IsNullOrEmpty(paragraphText))
@@ -436,10 +455,10 @@ namespace docx2gdb
                                                 if (paragraph.Descendants().OfType<ParagraphProperties>().First().Descendants().OfType<Justification>().Any())
                                                 {
 
-                                                    paragraphText = paragraphText.Replace("٭٭٭", "").Replace("  ", " ").Replace("  ", " ").Trim();
+                                                    paragraphText = paragraphText.Replace("  ", " ").Replace("  ", " ").Trim();
                                                     if (!string.IsNullOrEmpty(paragraphText))
                                                     {
-                                                        GanjoorVerse newVerse = newGdbFile.CreateNewVerse(poemId, verseOrder, VersePosition.Paragraph);
+                                                        GanjoorVerse newVerse = newGdbFile.CreateNewVerse(poemId, verseOrder, VersePosition.Comment);
                                                         newGdbFile.SetVerseText(poemId, newVerse._Order, paragraphText);
                                                         verseOrder++;
                                                         paragraphText = "";
