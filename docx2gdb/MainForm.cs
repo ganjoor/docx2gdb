@@ -15,7 +15,7 @@ namespace docx2gdb
         public MainForm()
         {
             InitializeComponent();
-            cmbFormat.SelectedIndex = 2;//ریاض العارفین
+            cmbFormat.SelectedIndex = 3;//لوایج
         }
 
         enum WaitingFor
@@ -604,6 +604,106 @@ namespace docx2gdb
 
             }
         }
+
+        private void ConvertFormatLavayeh()
+        {
+            if (!File.Exists(txtInput.Text))
+            {
+                MessageBox.Show("فایل ورودی وجود ندارد.");
+                return;
+            }
+            if (File.Exists(txtOutput.Text))
+            {
+                if (
+                    MessageBox.Show("فایل خروجی وجود دارد. پاک شود؟", "اخطار", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2, MessageBoxOptions.RtlReading | MessageBoxOptions.RightAlign)
+                    == DialogResult.No
+                    )
+                    return;
+                File.Delete(txtOutput.Text);
+            }
+            DbBrowser newGdbFile = DbBrowser.CreateNewPoemDatabase(
+                /*string fileName = */ txtOutput.Text,
+                /*bool faileIfExists =*/ true
+                );
+            if (newGdbFile != null)
+            {
+                int newPoetID = newGdbFile.NewPoet(txtPoetName.Text);
+                GanjoorCat newCategory = newGdbFile.CreateNewCategory(txtCategoryName.Text, /*int ParentCategoryID = */ newGdbFile.GetPoet(newPoetID)._CatID, newPoetID);
+
+
+                int poemNum = 0;
+                int poemId = 0;
+                int verseOrder = 0;
+
+                newGdbFile.BeginBatchOperation();//speed up batch INSERT sql statements begins
+                using (WordprocessingDocument doc = WordprocessingDocument.Open(txtInput.Text/*path*/, false/*I do not want to edit*/))
+                {
+                    Body body = doc.MainDocumentPart.Document.Body;
+                    foreach (var paragraph in body.Descendants().OfType<Paragraph>())
+                    {
+                        List<string> verses = new List<string>();
+                        string paragraphText = "";
+                        foreach (Run run in paragraph.Descendants().OfType<Run>())
+                        {
+                            if (run.ChildElements.OfType<Break>().Any())
+                            {
+                                if (!string.IsNullOrEmpty(paragraphText))
+                                    verses.Add(paragraphText);
+                                paragraphText = "";
+                            }
+                            paragraphText += run.InnerText
+                                //optimize for search
+                                .Trim().Replace((char)0x200F, (char)0x200C).Replace("ي", "ی").Replace((char)0xE81D, (char)0x200C);
+                        }
+                        paragraphText = paragraphText.Replace("  ", " ").Replace("  ", " ").Trim();
+
+                        if (paragraphText.IndexOf("فصل:") != -1)
+                        {
+                            poemNum++;
+                            GanjoorPoem newPoem = newGdbFile.CreateNewPoem($"فصل {poemNum}", newCategory._ID);
+                            poemId = newPoem._ID;
+                            verseOrder = 0;
+                            paragraphText = paragraphText.Replace("فصل:", "").Trim();
+                        }
+                        else
+                        if (!string.IsNullOrEmpty(paragraphText))
+                            if (paragraph.Descendants().OfType<Run>().Any())
+                            {
+                                if (paragraph.Descendants().OfType<Run>().First().Descendants().OfType<RunProperties>().Any())
+                                    if (paragraph.Descendants().OfType<Run>().First().Descendants().OfType<RunProperties>()
+                                        .First().Descendants().OfType<Bold>().Any())
+                                    {
+
+                                        paragraphText = paragraphText.Replace("  ", " ").Replace("  ", " ").Trim();
+                                        if (!string.IsNullOrEmpty(paragraphText))
+                                        {
+                                            GanjoorVerse newVerse = newGdbFile.CreateNewVerse(poemId, verseOrder, VersePosition.Comment);
+                                            newGdbFile.SetVerseText(poemId, newVerse._Order, paragraphText);
+                                            verseOrder++;
+                                            paragraphText = "";
+                                        }
+                                    }
+                            }
+                        if (!string.IsNullOrEmpty(paragraphText))
+                            verses.Add(paragraphText);
+
+                        foreach (var verse in verses)
+                        {
+                            GanjoorVerse newVerse = newGdbFile.CreateNewVerse(poemId, verseOrder, VersePosition.Paragraph);
+                            newGdbFile.SetVerseText(poemId, newVerse._Order, verse);
+                            verseOrder++;
+                        }
+
+                    }
+
+                }
+                newGdbFile.CommitBatchOperation();//speed up batch INSERT sql statements ends
+
+                newGdbFile.CloseDb();
+                MessageBox.Show("انجام شد.");
+
+            }
+        }
         private void btnConvert_Click(object sender, EventArgs e)
         {
             switch (cmbFormat.SelectedIndex)
@@ -613,6 +713,9 @@ namespace docx2gdb
                     break;
                 case 2:
                     ConvertFormatRiaz();
+                    break;
+                case 3:
+                    ConvertFormatLavayeh();
                     break;
                 default:
                     ConvertFormatVahdat();

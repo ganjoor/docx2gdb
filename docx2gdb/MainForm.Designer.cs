@@ -50,7 +50,7 @@
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(86, 21);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(40, 13);
+            this.label1.Size = new System.Drawing.Size(59, 21);
             this.label1.TabIndex = 0;
             this.label1.Text = "ورودی:";
             // 
@@ -59,7 +59,7 @@
             this.txtInput.Location = new System.Drawing.Point(133, 17);
             this.txtInput.Name = "txtInput";
             this.txtInput.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.txtInput.Size = new System.Drawing.Size(358, 21);
+            this.txtInput.Size = new System.Drawing.Size(358, 27);
             this.txtInput.TabIndex = 1;
             this.txtInput.Text = "C:\\Users\\moham\\Desktop\\riaz-ul-arefin.docx";
             // 
@@ -88,7 +88,7 @@
             this.txtOutput.Location = new System.Drawing.Point(133, 45);
             this.txtOutput.Name = "txtOutput";
             this.txtOutput.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.txtOutput.Size = new System.Drawing.Size(358, 21);
+            this.txtOutput.Size = new System.Drawing.Size(358, 27);
             this.txtOutput.TabIndex = 4;
             this.txtOutput.Text = "C:\\Users\\moham\\Desktop\\riaz-ul-arefin.gdb";
             // 
@@ -97,7 +97,7 @@
             this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(80, 49);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(46, 13);
+            this.label2.Size = new System.Drawing.Size(69, 21);
             this.label2.TabIndex = 3;
             this.label2.Text = "خروجی:";
             // 
@@ -115,7 +115,7 @@
             // 
             this.txtPoetName.Location = new System.Drawing.Point(133, 99);
             this.txtPoetName.Name = "txtPoetName";
-            this.txtPoetName.Size = new System.Drawing.Size(98, 21);
+            this.txtPoetName.Size = new System.Drawing.Size(98, 27);
             this.txtPoetName.TabIndex = 8;
             this.txtPoetName.Text = "رضاقلی خان هدایت";
             // 
@@ -124,7 +124,7 @@
             this.label3.AutoSize = true;
             this.label3.Location = new System.Drawing.Point(73, 103);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(53, 13);
+            this.label3.Size = new System.Drawing.Size(80, 21);
             this.label3.TabIndex = 7;
             this.label3.Text = "نام شاعر:";
             // 
@@ -132,7 +132,7 @@
             // 
             this.txtCategoryName.Location = new System.Drawing.Point(133, 127);
             this.txtCategoryName.Name = "txtCategoryName";
-            this.txtCategoryName.Size = new System.Drawing.Size(98, 21);
+            this.txtCategoryName.Size = new System.Drawing.Size(98, 27);
             this.txtCategoryName.TabIndex = 10;
             this.txtCategoryName.Text = "تذکرهٔ ریاض العارفین";
             // 
@@ -141,7 +141,7 @@
             this.label4.AutoSize = true;
             this.label4.Location = new System.Drawing.Point(78, 131);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(48, 13);
+            this.label4.Size = new System.Drawing.Size(74, 21);
             this.label4.TabIndex = 9;
             this.label4.Text = "نام کتاب:";
             // 
@@ -149,7 +149,7 @@
             // 
             this.txtPoemTitlePrefix.Location = new System.Drawing.Point(133, 155);
             this.txtPoemTitlePrefix.Name = "txtPoemTitlePrefix";
-            this.txtPoemTitlePrefix.Size = new System.Drawing.Size(98, 21);
+            this.txtPoemTitlePrefix.Size = new System.Drawing.Size(98, 27);
             this.txtPoemTitlePrefix.TabIndex = 12;
             this.txtPoemTitlePrefix.Text = "بخش";
             // 
@@ -158,7 +158,7 @@
             this.label5.AutoSize = true;
             this.label5.Location = new System.Drawing.Point(17, 159);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(109, 13);
+            this.label5.Size = new System.Drawing.Size(164, 21);
             this.label5.TabIndex = 11;
             this.label5.Text = "پیشوند عنوان شعرها:";
             // 
@@ -167,7 +167,7 @@
             this.label6.AutoSize = true;
             this.label6.Location = new System.Drawing.Point(80, 75);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(32, 13);
+            this.label6.Size = new System.Drawing.Size(49, 21);
             this.label6.TabIndex = 13;
             this.label6.Text = "قالب:";
             // 
@@ -178,15 +178,16 @@
             this.cmbFormat.Items.AddRange(new object[] {
             "وحدت کرمانشاهی / شاه نعمت الله ولی",
             "سلطان ولد",
-            "رضاقلی خان هدایت"});
+            "رضاقلی خان هدایت",
+            "لوایج عین القضات"});
             this.cmbFormat.Location = new System.Drawing.Point(134, 72);
             this.cmbFormat.Name = "cmbFormat";
-            this.cmbFormat.Size = new System.Drawing.Size(397, 21);
+            this.cmbFormat.Size = new System.Drawing.Size(397, 29);
             this.cmbFormat.TabIndex = 14;
             // 
             // MainForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 21F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(537, 216);
             this.Controls.Add(this.cmbFormat);
