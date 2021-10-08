@@ -376,10 +376,12 @@ namespace docx2gdb
                             {
                                 List<string> verses = new List<string>();
                                 string paragraphText = "";
+                                bool anyBreaks = false;
                                 foreach (Run run in paragraph.Descendants().OfType<Run>())
                                 {
                                     if (run.ChildElements.OfType<Break>().Any())
                                     {
+                                        anyBreaks = true;
                                         if (!string.IsNullOrEmpty(paragraphText))
                                             verses.Add(paragraphText);
                                         paragraphText = "";
@@ -388,6 +390,13 @@ namespace docx2gdb
                                         //optimize for search
                                         .Trim().Replace((char)0x200F, (char)0x200C).Replace("ي", "ی").Replace((char)0xE81D, (char)0x200C);
                                 }
+                                if(!anyBreaks)
+                                {
+                                    paragraphText = paragraph.InnerText
+                                        //optimize for search
+                                        .Trim().Replace((char)0x200F, (char)0x200C).Replace("ي", "ی").Replace((char)0xE81D, (char)0x200C);
+                                }
+                                
                                 paragraphText = paragraphText.Replace("  ", " ").Replace("  ", " ").Trim();
 
                                 if (!string.IsNullOrEmpty(paragraphText))
@@ -434,11 +443,12 @@ namespace docx2gdb
                                     string paragraphText = "";
                                     foreach (Paragraph paragraph in cell.Descendants().OfType<Paragraph>())
                                     {
-
+                                        bool anyBreaks = false;
                                         foreach (Run run in paragraph.Descendants().OfType<Run>())
                                         {
                                             if (run.ChildElements.OfType<Break>().Any())
                                             {
+                                                anyBreaks = true;
                                                 paragraphText = paragraphText.Replace("٭٭٭", "").Replace("  ", " ").Replace("  ", " ").Trim();
                                                 if (!string.IsNullOrEmpty(paragraphText))
                                                     verses.Add(paragraphText);
@@ -448,6 +458,13 @@ namespace docx2gdb
                                                 //optimize for search
                                                 .Replace((char)0x200F, (char)0x200C).Replace("ي", "ی").Replace((char)0xE81D, (char)0x200C).Replace("  ", " ").Replace("  ", " ").Trim();
                                         }
+                                        if (!anyBreaks)
+                                        {
+                                            paragraphText = paragraph.InnerText
+                                                //optimize for search
+                                                .Trim().Replace((char)0x200F, (char)0x200C).Replace("ي", "ی").Replace((char)0xE81D, (char)0x200C);
+                                        }
+                                        paragraphText = paragraphText.Replace("  ", " ").Replace("  ", " ").Trim();
 
                                         if (!string.IsNullOrEmpty(paragraphText))
                                             if (paragraph.Descendants().OfType<ParagraphProperties>().Any())
@@ -631,8 +648,11 @@ namespace docx2gdb
                 GanjoorCat newCategory = newGdbFile.CreateNewCategory(txtCategoryName.Text, /*int ParentCategoryID = */ newGdbFile.GetPoet(newPoetID)._CatID, newPoetID);
 
 
-                int poemNum = 0;
-                int poemId = 0;
+                int poemNum = 1;
+               
+
+                GanjoorPoem firstPoem = newGdbFile.CreateNewPoem($"ابتدا", newCategory._ID);
+                int poemId = firstPoem._ID;
                 int verseOrder = 0;
 
                 newGdbFile.BeginBatchOperation();//speed up batch INSERT sql statements begins
@@ -648,10 +668,12 @@ namespace docx2gdb
                                 continue;
                             List<string> verses = new List<string>();
                             string paragraphText = "";
+                            bool anyBreaks = false;
                             foreach (Run run in paragraph.Descendants().OfType<Run>())
                             {
                                 if (run.ChildElements.OfType<Break>().Any())
                                 {
+                                    anyBreaks = true;
                                     if (!string.IsNullOrEmpty(paragraphText))
                                         verses.Add(paragraphText);
                                     paragraphText = "";
@@ -660,15 +682,21 @@ namespace docx2gdb
                                     //optimize for search
                                     .Trim().Replace((char)0x200F, (char)0x200C).Replace("ي", "ی").Replace((char)0xE81D, (char)0x200C);
                             }
+                            if (!anyBreaks)
+                            {
+                                paragraphText = paragraph.InnerText
+                                    //optimize for search
+                                    .Trim().Replace((char)0x200F, (char)0x200C).Replace("ي", "ی").Replace((char)0xE81D, (char)0x200C);
+                            }
                             paragraphText = paragraphText.Replace("٭٭٭", "").Replace("  ", " ").Replace("  ", " ").Trim();
 
-                            if (paragraphText.IndexOf("فصل:") != -1)
+                            if (paragraphText.IndexOf("حکایت:") != -1)
                             {
                                 poemNum++;
-                                GanjoorPoem newPoem = newGdbFile.CreateNewPoem($"فصل {poemNum}", newCategory._ID);
+                                GanjoorPoem newPoem = newGdbFile.CreateNewPoem($"حکایت {poemNum}", newCategory._ID);
                                 poemId = newPoem._ID;
                                 verseOrder = 0;
-                                paragraphText = paragraphText.Replace("فصل:", "").Trim();
+                                paragraphText = paragraphText.Replace("حکایت:", "").Trim();
                             }
                             else
                             if (!string.IsNullOrEmpty(paragraphText))
@@ -714,11 +742,12 @@ namespace docx2gdb
                                     string paragraphText = "";
                                     foreach (Paragraph paragraph in cell.Descendants().OfType<Paragraph>())
                                     {
-
+                                        bool anyBreaks = false;
                                         foreach (Run run in paragraph.Descendants().OfType<Run>())
                                         {
                                             if (run.ChildElements.OfType<Break>().Any())
                                             {
+                                                anyBreaks = true;
                                                 paragraphText = paragraphText.Replace("  ", " ").Replace("  ", " ").Trim();
                                                 if (!string.IsNullOrEmpty(paragraphText))
                                                     verses.Add(paragraphText);
@@ -727,6 +756,12 @@ namespace docx2gdb
                                             paragraphText += run.InnerText
                                                 //optimize for search
                                                 .Replace((char)0x200F, (char)0x200C).Replace("ي", "ی").Replace((char)0xE81D, (char)0x200C).Replace("  ", " ").Replace("  ", " ").Trim();
+                                        }
+                                        if (!anyBreaks)
+                                        {
+                                            paragraphText = paragraph.InnerText
+                                                //optimize for search
+                                                .Trim().Replace((char)0x200F, (char)0x200C).Replace("ي", "ی").Replace((char)0xE81D, (char)0x200C);
                                         }
 
                                         if (!string.IsNullOrEmpty(paragraphText))
