@@ -117,7 +117,7 @@
             this.txtPoetName.Name = "txtPoetName";
             this.txtPoetName.Size = new System.Drawing.Size(98, 27);
             this.txtPoetName.TabIndex = 8;
-            this.txtPoetName.Text = "رضاقلی خان هدایت";
+            this.txtPoetName.Text = "شیخ محمود شبستری";
             // 
             // label3
             // 
@@ -134,7 +134,7 @@
             this.txtCategoryName.Name = "txtCategoryName";
             this.txtCategoryName.Size = new System.Drawing.Size(98, 27);
             this.txtCategoryName.TabIndex = 10;
-            this.txtCategoryName.Text = "تذکرهٔ ریاض العارفین";
+            this.txtCategoryName.Text = "سعادت نامه";
             // 
             // label4
             // 
@@ -179,7 +179,8 @@
             "وحدت کرمانشاهی / شاه نعمت الله ولی",
             "سلطان ولد",
             "رضاقلی خان هدایت",
-            "لوایج عین القضات"});
+            "لوایج عین القضات",
+            "سعادت نامه شبستری"});
             this.cmbFormat.Location = new System.Drawing.Point(134, 72);
             this.cmbFormat.Name = "cmbFormat";
             this.cmbFormat.Size = new System.Drawing.Size(397, 29);

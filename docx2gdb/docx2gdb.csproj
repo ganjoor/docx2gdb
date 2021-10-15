@@ -120,6 +120,7 @@
     <None Include="Sample Docx Files\divan-vahdat.docx" />
     <None Include="Sample Docx Files\lavayeh-ainolqozat.docx" />
     <None Include="Sample Docx Files\riaz-ul-arefin.docx" />
+    <None Include="Sample Docx Files\shabestari-saadatnameh.docx" />
     <None Include="Sample Docx Files\valad-name.docx" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
