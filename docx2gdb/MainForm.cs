@@ -209,7 +209,12 @@ namespace docx2gdb
                         if (table.PreviousSibling<Paragraph>() != null)
                         {
                             poemNum++;
-                            GanjoorPoem newPoem = newGdbFile.CreateNewPoem(table.PreviousSibling<Paragraph>().InnerText, newCategory._ID);
+                            var element = table.PreviousSibling<Paragraph>();
+                            while(string.IsNullOrEmpty(element.InnerText.Trim()) && element.PreviousSibling<Paragraph>() != null)
+                            {
+                                element = element.PreviousSibling<Paragraph>();
+                            }
+                            GanjoorPoem newPoem = newGdbFile.CreateNewPoem(element.InnerText, newCategory._ID);
                             poemId = newPoem._ID;
                         }
                         foreach (TableRow row in table.Descendants().OfType<TableRow>())
@@ -220,10 +225,13 @@ namespace docx2gdb
                                 string paragraphText = "";
                                 foreach (Paragraph paragraph in cell.Descendants().OfType<Paragraph>())
                                 {
+
+                                    bool anyBreaks = false;
                                     foreach (Run run in paragraph.Descendants().OfType<Run>())
                                     {
                                         if (run.ChildElements.OfType<Break>().Any())
                                         {
+                                            anyBreaks = true;
                                             if (!string.IsNullOrEmpty(paragraphText))
                                                 verses.Add(paragraphText);
                                             paragraphText = "";
@@ -232,9 +240,17 @@ namespace docx2gdb
                                             //optimize for search
                                             .Trim().Replace((char)0x200F, (char)0x200C).Replace("ي", "ی").Replace((char)0xE81D, (char)0x200C);
                                     }
+                                    if (!anyBreaks)
+                                    {
+                                        paragraphText = paragraph.InnerText
+                                            //optimize for search
+                                            .Trim().Replace((char)0x200F, (char)0x200C).Replace("ي", "ی").Replace((char)0xE81D, (char)0x200C);
+                                    }
                                 }
+                                paragraphText = paragraphText.Replace("  ", " ").Replace("  ", " ").Trim();
+
                                 if (!string.IsNullOrEmpty(paragraphText))
-                                    verses.Add(paragraphText.Replace("  ", " ").Replace("  ", " ").Trim());
+                                    verses.Add(paragraphText);
 
                                 if (verses.Count == 0)
                                 {
