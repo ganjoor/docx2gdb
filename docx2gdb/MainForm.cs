@@ -329,12 +329,6 @@ namespace docx2gdb
 
                             }
 
-
-
-                        }
-
-                        if((RightVerses.Count + LeftVerses.Count) > 0)
-                        {
                             if (RightVerses.Count != LeftVerses.Count)
                             {
                                 using (CorrectVerses dlg = new CorrectVerses())
@@ -356,8 +350,10 @@ namespace docx2gdb
                                     }
                                 }
                             }
-                            else
+
+                            if ((RightVerses.Count + LeftVerses.Count) > 0)
                             {
+
                                 List<string> RightAndLeftVerses = new List<string>();
                                 for (int i = 0; i < RightVerses.Count/*or LeftVerses.Count*/; i++)
                                 {
@@ -377,7 +373,10 @@ namespace docx2gdb
 
                                 RightVerses.Clear(); LeftVerses.Clear();
                             }
+
                         }
+
+                        
 
                         
                     }
