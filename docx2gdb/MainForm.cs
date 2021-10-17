@@ -15,7 +15,7 @@ namespace docx2gdb
         public MainForm()
         {
             InitializeComponent();
-            cmbFormat.SelectedIndex = 4;//شبستری
+            cmbFormat.SelectedIndex = 1;//ولد
         }
 
         enum WaitingFor
@@ -232,6 +232,7 @@ namespace docx2gdb
                                         if (run.ChildElements.OfType<Break>().Any())
                                         {
                                             anyBreaks = true;
+                                            paragraphText = paragraphText.Replace("  ", " ").Replace("  ", " ").Trim();
                                             if (!string.IsNullOrEmpty(paragraphText))
                                                 verses.Add(paragraphText);
                                             paragraphText = "";
@@ -320,8 +321,6 @@ namespace docx2gdb
                                                     }
                                                 }
                                             }
-
-
                                             break;
                                     }
 
@@ -329,7 +328,58 @@ namespace docx2gdb
 
 
                             }
+
+
+
                         }
+
+                        if((RightVerses.Count + LeftVerses.Count) > 0)
+                        {
+                            if (RightVerses.Count != LeftVerses.Count)
+                            {
+                                using (CorrectVerses dlg = new CorrectVerses())
+                                {
+                                    dlg.RightVerses = RightVerses.ToArray();
+                                    dlg.LeftVerses = LeftVerses.ToArray();
+                                    DialogResult dlgResult = dlg.ShowDialog(this);
+                                    if (dlgResult == System.Windows.Forms.DialogResult.Yes)
+                                    {
+                                        RightVerses = new List<string>(dlg.RightVerses);
+                                        LeftVerses = new List<string>(dlg.LeftVerses);
+                                    }
+                                    else
+                                        if (dlgResult == System.Windows.Forms.DialogResult.Abort)
+                                    {
+                                        newGdbFile.CloseDb();
+                                        MessageBox.Show("نیمه‌کاره انجام شد.");
+                                        return;
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                List<string> RightAndLeftVerses = new List<string>();
+                                for (int i = 0; i < RightVerses.Count/*or LeftVerses.Count*/; i++)
+                                {
+                                    RightAndLeftVerses.Add(RightVerses[i]);
+                                    RightAndLeftVerses.Add(LeftVerses[i]);
+                                }
+
+
+                                int beforeVerse = 0;
+                                foreach (string VerseText in RightAndLeftVerses)
+                                {
+                                    GanjoorVerse newVerse = newGdbFile.CreateNewVerse(poemId, beforeVerse, beforeVerse % 2 == 0 ? VersePosition.Right : VersePosition.Left);
+                                    newGdbFile.SetVerseText(poemId, newVerse._Order, VerseText);
+                                    beforeVerse++;
+                                }
+
+
+                                RightVerses.Clear(); LeftVerses.Clear();
+                            }
+                        }
+
+                        
                     }
                 }
                 newGdbFile.CommitBatchOperation();//speed up batch INSERT sql statements ends
