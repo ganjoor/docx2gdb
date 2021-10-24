@@ -180,7 +180,8 @@
             "سلطان ولد",
             "رضاقلی خان هدایت",
             "لوایج عین القضات",
-            "سعادت نامه شبستری"});
+            "سعادت نامه شبستری",
+            "رسالهٔ قشیریه"});
             this.cmbFormat.Location = new System.Drawing.Point(134, 72);
             this.cmbFormat.Name = "cmbFormat";
             this.cmbFormat.Size = new System.Drawing.Size(397, 29);

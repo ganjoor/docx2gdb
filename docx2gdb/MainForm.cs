@@ -15,7 +15,7 @@ namespace docx2gdb
         public MainForm()
         {
             InitializeComponent();
-            cmbFormat.SelectedIndex = 1;//ولد
+            cmbFormat.SelectedIndex = 5;//
         }
 
         enum WaitingFor
@@ -986,7 +986,288 @@ namespace docx2gdb
             }
         }
 
+        private void ConvertFormatGhosheyrieh()
+        {
+            if (!File.Exists(txtInput.Text))
+            {
+                MessageBox.Show("فایل ورودی وجود ندارد.");
+                return;
+            }
+            if (File.Exists(txtOutput.Text))
+            {
+                if (
+                    MessageBox.Show("فایل خروجی وجود دارد. پاک شود؟", "اخطار", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2, MessageBoxOptions.RtlReading | MessageBoxOptions.RightAlign)
+                    == DialogResult.No
+                    )
+                    return;
+                File.Delete(txtOutput.Text);
+            }
+            DbBrowser newGdbFile = DbBrowser.CreateNewPoemDatabase(
+                /*string fileName = */ txtOutput.Text,
+                /*bool faileIfExists =*/ true
+                );
+            if (newGdbFile != null)
+            {
+                int newPoetID = newGdbFile.NewPoet(txtPoetName.Text);
+                GanjoorCat newCategory = newGdbFile.CreateNewCategory(txtCategoryName.Text, /*int ParentCategoryID = */ newGdbFile.GetPoet(newPoetID)._CatID, newPoetID);
 
+
+                int poemNum = 0;
+                int poemId = 0;
+                int verseOrder = 0;
+
+                newGdbFile.BeginBatchOperation();//speed up batch INSERT sql statements begins
+                using (WordprocessingDocument doc = WordprocessingDocument.Open(txtInput.Text/*path*/, false/*I do not want to edit*/))
+                {
+                    Body body = doc.MainDocumentPart.Document.Body;
+                    foreach (var item in body.Descendants())
+                    {
+                        if (item is Paragraph)
+                        {
+                            Paragraph paragraph = item as Paragraph;
+                            if (paragraph.Parent is TableCell)
+                                continue;
+                            if (paragraph.Descendants().OfType<Run>().Any())
+                            {
+                                if (paragraph.Descendants().OfType<Run>().First().Descendants().OfType<RunProperties>().Any())
+                                    if (paragraph.Descendants().OfType<Run>().First().Descendants().OfType<RunProperties>()
+                                        .First().Descendants().OfType<Bold>().Any())
+                                    {
+
+                                        string paragraphText = paragraph.InnerText.Replace("  ", " ").Replace("  ", " ").Trim();
+                                        if (!string.IsNullOrEmpty(paragraphText))
+                                        {
+                                            poemNum++;
+                                            GanjoorPoem newPoem = newGdbFile.CreateNewPoem(paragraph.InnerText, newCategory._ID);
+                                            poemId = newPoem._ID;
+                                            verseOrder = 0;
+                                            paragraphText = "";
+                                        }
+                                    }
+                            }
+                            if (paragraph.Descendants<ParagraphStyleId>().Any() && paragraph.Descendants().OfType<ParagraphStyleId>().First().Val == "Heading1")
+                            {
+                                poemNum++;
+                                GanjoorPoem newPoem = newGdbFile.CreateNewPoem(paragraph.InnerText, newCategory._ID);
+                                poemId = newPoem._ID;
+                                verseOrder = 0;
+                            }
+                            else
+                            {
+                                List<string> verses = new List<string>();
+                                string paragraphText = "";
+                                bool anyBreaks = false;
+                                foreach (Run run in paragraph.Descendants().OfType<Run>())
+                                {
+                                    if (run.ChildElements.OfType<Break>().Any())
+                                    {
+                                        anyBreaks = true;
+                                        if (!string.IsNullOrEmpty(paragraphText))
+                                            verses.Add(paragraphText);
+                                        paragraphText = "";
+                                    }
+                                    paragraphText += run.InnerText
+                                        //optimize for search
+                                        .Trim().Replace((char)0x200F, (char)0x200C).Replace("ي", "ی").Replace((char)0xE81D, (char)0x200C);
+                                }
+                                if (!anyBreaks)
+                                {
+                                    paragraphText = paragraph.InnerText
+                                        //optimize for search
+                                        .Trim().Replace((char)0x200F, (char)0x200C).Replace("ي", "ی").Replace((char)0xE81D, (char)0x200C);
+                                }
+
+                                paragraphText = paragraphText.Replace("  ", " ").Replace("  ", " ").Trim();
+
+                                if (!string.IsNullOrEmpty(paragraphText))
+                                    verses.Add(paragraphText);
+
+                                foreach (var verse in verses)
+                                {
+                                    GanjoorVerse newVerse = newGdbFile.CreateNewVerse(poemId, verseOrder, VersePosition.Paragraph);
+                                    newGdbFile.SetVerseText(poemId, newVerse._Order, verse);
+                                    verseOrder++;
+                                }
+                            }
+                        }
+                        else
+                        if (item is Table)
+                        {
+                            bool emptyMet = false;
+                            WaitingFor w = WaitingFor.Right;
+                            List<string> RightVerses = new List<string>();
+                            List<string> LeftVerses = new List<string>();
+                            Table table = item as Table;
+                            foreach (TableRow row in table.Descendants().OfType<TableRow>())
+                                foreach (TableCell cell in row.Descendants().OfType<TableCell>())
+                                {
+                                    List<string> verses = new List<string>();
+                                    string paragraphText = "";
+                                    foreach (Paragraph paragraph in cell.Descendants().OfType<Paragraph>())
+                                    {
+                                        bool anyBreaks = false;
+                                        foreach (Run run in paragraph.Descendants().OfType<Run>())
+                                        {
+                                            if (run.ChildElements.OfType<Break>().Any())
+                                            {
+                                                anyBreaks = true;
+                                                paragraphText = paragraphText.Replace("٭٭٭", "").Replace("  ", " ").Replace("  ", " ").Trim();
+                                                if (!string.IsNullOrEmpty(paragraphText))
+                                                    verses.Add(paragraphText);
+                                                paragraphText = "";
+                                            }
+                                            paragraphText += run.InnerText
+                                                //optimize for search
+                                                .Replace((char)0x200F, (char)0x200C).Replace("ي", "ی").Replace((char)0xE81D, (char)0x200C).Replace("  ", " ").Replace("  ", " ").Trim();
+                                        }
+                                        if (!anyBreaks)
+                                        {
+                                            paragraphText = paragraph.InnerText
+                                                //optimize for search
+                                                .Trim().Replace((char)0x200F, (char)0x200C).Replace("ي", "ی").Replace((char)0xE81D, (char)0x200C);
+                                        }
+                                        paragraphText = paragraphText.Replace("  ", " ").Replace("  ", " ").Trim();
+
+                    
+                                    }
+                                    paragraphText = paragraphText.Replace("٭٭٭", "").Replace("  ", " ").Replace("  ", " ").Trim();
+                                    if (!string.IsNullOrEmpty(paragraphText))
+                                        verses.Add(paragraphText);
+
+
+
+                                    if (verses.Count == 0)
+                                    {
+                                        emptyMet = true;
+                                    }
+                                    else
+                                    {
+                                        if (!emptyMet && verses.Count != 2)//if after LEFT VERSES there are no BLANK CELLS, do wait for another cell with RIGHT VERSES instead of MIDDLE
+                                        {
+                                            if (w == WaitingFor.Middle)
+                                                w = WaitingFor.Right;
+                                        }
+                                        emptyMet = false;
+                                        switch (w)
+                                        {
+                                            case WaitingFor.Right:
+                                                RightVerses.AddRange(verses);
+                                                w = WaitingFor.Left;
+
+                                                break;
+                                            case WaitingFor.Left:
+                                                LeftVerses.AddRange(verses);
+                                                w = WaitingFor.Middle;
+                                                if (RightVerses.Count == LeftVerses.Count)
+                                                {
+                                                    List<string> RightAndLeftVerses = new List<string>();
+                                                    for (int i = 0; i < RightVerses.Count/*or LeftVerses.Count*/; i++)
+                                                    {
+                                                        RightAndLeftVerses.Add(RightVerses[i]);
+                                                        RightAndLeftVerses.Add(LeftVerses[i]);
+                                                    }
+
+
+                                                    int beforeVerse = 0;
+                                                    foreach (string VerseText in RightAndLeftVerses)
+                                                    {
+                                                        GanjoorVerse newVerse = newGdbFile.CreateNewVerse(poemId, verseOrder, beforeVerse % 2 == 0 ? VersePosition.Right : VersePosition.Left);
+                                                        newGdbFile.SetVerseText(poemId, newVerse._Order, VerseText);
+                                                        beforeVerse++;
+                                                        verseOrder++;
+                                                    }
+
+
+                                                    verses.Clear();
+                                                    RightVerses.Clear(); LeftVerses.Clear();
+                                                    w = WaitingFor.Right;
+                                                }
+                                                break;
+                                            case WaitingFor.Middle:
+                                                if (RightVerses.Count != LeftVerses.Count)
+                                                {
+                                                    using (CorrectVerses dlg = new CorrectVerses())
+                                                    {
+                                                        dlg.RightVerses = RightVerses.ToArray();
+                                                        dlg.LeftVerses = LeftVerses.ToArray();
+                                                        DialogResult dlgResult = dlg.ShowDialog(this);
+                                                        if (dlgResult == System.Windows.Forms.DialogResult.Yes)
+                                                        {
+                                                            RightVerses = new List<string>(dlg.RightVerses);
+                                                            LeftVerses = new List<string>(dlg.LeftVerses);
+                                                        }
+                                                        else
+                                                            if (dlgResult == System.Windows.Forms.DialogResult.Abort)
+                                                        {
+                                                            newGdbFile.CommitBatchOperation();//speed up batch INSERT sql statements ends
+                                                            newGdbFile.CloseDb();
+                                                            MessageBox.Show("نیمه‌کاره انجام شد.");
+                                                            return;
+                                                        }
+                                                    }
+
+                                                }
+                                                break;
+                                        }
+
+                                    }
+
+
+                                }
+                            if (RightVerses.Count != 0 && RightVerses.Count == LeftVerses.Count)
+                            {
+                                List<string> RightAndLeftVerses = new List<string>();
+                                for (int i = 0; i < RightVerses.Count/*or LeftVerses.Count*/; i++)
+                                {
+                                    RightAndLeftVerses.Add(RightVerses[i]);
+                                    RightAndLeftVerses.Add(LeftVerses[i]);
+                                }
+
+
+                                int beforeVerse = 0;
+                                foreach (string VerseText in RightAndLeftVerses)
+                                {
+                                    GanjoorVerse newVerse = newGdbFile.CreateNewVerse(poemId, verseOrder, beforeVerse % 2 == 0 ? VersePosition.Right : VersePosition.Left);
+                                    newGdbFile.SetVerseText(poemId, newVerse._Order, VerseText);
+                                    beforeVerse++;
+                                    verseOrder++;
+                                }
+
+
+                            }
+                            else if (RightVerses.Count != 0)
+                            {
+                                using (CorrectVerses dlg = new CorrectVerses())
+                                {
+                                    dlg.RightVerses = RightVerses.ToArray();
+                                    dlg.LeftVerses = LeftVerses.ToArray();
+                                    DialogResult dlgResult = dlg.ShowDialog(this);
+                                    if (dlgResult == System.Windows.Forms.DialogResult.Yes)
+                                    {
+                                        RightVerses = new List<string>(dlg.RightVerses);
+                                        LeftVerses = new List<string>(dlg.LeftVerses);
+                                    }
+                                    else
+                                        if (dlgResult == System.Windows.Forms.DialogResult.Abort)
+                                    {
+                                        newGdbFile.CommitBatchOperation();//speed up batch INSERT sql statements ends
+                                        newGdbFile.CloseDb();
+                                        MessageBox.Show("نیمه‌کاره انجام شد.");
+                                        return;
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                }
+                newGdbFile.CommitBatchOperation();//speed up batch INSERT sql statements ends
+
+                newGdbFile.CloseDb();
+                MessageBox.Show("انجام شد.");
+
+            }
+        }
 
         private void ConvertFormatShabestari()
         {
@@ -1316,6 +1597,9 @@ namespace docx2gdb
                     break;
                 case 4:
                     ConvertFormatShabestari();
+                    break;
+                case 5:
+                    ConvertFormatGhosheyrieh();
                     break;
                 default:
                     ConvertFormatVahdat();
